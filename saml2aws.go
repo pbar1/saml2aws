@@ -8,6 +8,7 @@ import (
 	"github.com/versent/saml2aws/pkg/creds"
 	"github.com/versent/saml2aws/pkg/provider/adfs"
 	"github.com/versent/saml2aws/pkg/provider/adfs2"
+	"github.com/versent/saml2aws/pkg/provider/azuread"
 	"github.com/versent/saml2aws/pkg/provider/jumpcloud"
 	"github.com/versent/saml2aws/pkg/provider/keycloak"
 	"github.com/versent/saml2aws/pkg/provider/okta"
@@ -21,6 +22,7 @@ type ProviderList map[string][]string
 var MFAsByProvider = ProviderList{
 	"ADFS":      []string{"Auto", "VIP"},
 	"ADFS2":     []string{"Auto", "RSA"}, // nothing automatic about ADFS 2.x
+	"Azure AD":  []string{"Auto"},
 	"Ping":      []string{"Auto"},        // automatically detects PingID
 	"JumpCloud": []string{"Auto"},
 	"Okta":      []string{"Auto"}, // automatically detects DUO, SMS and ToTP
@@ -84,6 +86,11 @@ func NewSAMLClient(idpAccount *cfg.IDPAccount) (SAMLClient, error) {
 			return nil, fmt.Errorf("Invalid MFA type: %v for %v provider", idpAccount.MFA, idpAccount.Provider)
 		}
 		return adfs2.New(idpAccount)
+	case "Azure AD":
+		if invalidMFA(idpAccount.Provider, idpAccount.MFA) {
+			return nil, fmt.Errorf("Invalid MFA type: %v for %v provider", idpAccount.MFA, idpAccount.Provider)
+		}
+		return azuread.New(idpAccount)
 	case "Ping":
 		if invalidMFA(idpAccount.Provider, idpAccount.MFA) {
 			return nil, fmt.Errorf("Invalid MFA type: %v for %v provider", idpAccount.MFA, idpAccount.Provider)

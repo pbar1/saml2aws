@@ -51,7 +51,7 @@ func main() {
 	// Common (to all commands) settings
 	commonFlags := new(flags.CommonFlags)
 	app.Flag("idp-account", "The name of the configured IDP account").Short('a').Default("default").StringVar(&commonFlags.IdpAccount)
-	app.Flag("idp-provider", "The configured IDP provider").EnumVar(&commonFlags.IdpProvider, "ADFS", "ADFS2", "Ping", "JumpCloud", "Okta", "KeyCloak")
+	app.Flag("idp-provider", "The configured IDP provider").EnumVar(&commonFlags.IdpProvider, "ADFS", "ADFS2", "Azure AD", "Ping", "JumpCloud", "Okta", "KeyCloak")
 	app.Flag("mfa", "The name of the mfa").EnumVar(&commonFlags.MFA, "Auto", "VIP")
 	app.Flag("skip-verify", "Skip verification of server certificate.").Short('s').BoolVar(&commonFlags.SkipVerify)
 	app.Flag("url", "The URL of the SAML IDP server used to login.").StringVar(&commonFlags.URL)
